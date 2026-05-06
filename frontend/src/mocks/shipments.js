@@ -1,0 +1,47 @@
+export const mockShipments = [
+  {
+    id: "SHP-1001",
+    origin: "Bengaluru",
+    destination: "Hyderabad",
+    weightKg: 1800,
+    status: "IN_TRANSIT",
+    eta: "Apr 3, 2026 18:30 IST",
+    lastLocation: { latitude: 14.4426, longitude: 78.8242 },
+    statusTimeline: [
+      { status: "POSTED", timestamp: "Apr 1, 2026 09:00 IST" },
+      { status: "AWARDED", timestamp: "Apr 1, 2026 12:10 IST" },
+      { status: "AWAITING_PICKUP", timestamp: "Apr 1, 2026 19:30 IST" },
+      { status: "IN_TRANSIT", timestamp: "Apr 2, 2026 06:45 IST" },
+    ],
+  },
+  {
+    id: "SHP-1002",
+    origin: "Chennai",
+    destination: "Pune",
+    weightKg: 2200,
+    status: "AWAITING_PICKUP",
+    eta: "Apr 4, 2026 10:15 IST",
+    lastLocation: { latitude: 13.0827, longitude: 80.2707 },
+    statusTimeline: [
+      { status: "POSTED", timestamp: "Apr 1, 2026 08:10 IST" },
+      { status: "AWARDED", timestamp: "Apr 1, 2026 15:20 IST" },
+      { status: "AWAITING_PICKUP", timestamp: "Apr 2, 2026 08:00 IST" },
+    ],
+  },
+  {
+    id: "SHP-1003",
+    origin: "Mumbai",
+    destination: "Ahmedabad",
+    weightKg: 900,
+    status: "DELIVERED",
+    eta: "Delivered",
+    lastLocation: { latitude: 23.0225, longitude: 72.5714 },
+    statusTimeline: [
+      { status: "POSTED", timestamp: "Mar 30, 2026 10:00 IST" },
+      { status: "AWARDED", timestamp: "Mar 30, 2026 13:40 IST" },
+      { status: "AWAITING_PICKUP", timestamp: "Mar 31, 2026 05:30 IST" },
+      { status: "IN_TRANSIT", timestamp: "Mar 31, 2026 08:00 IST" },
+      { status: "DELIVERED", timestamp: "Apr 1, 2026 21:10 IST" },
+    ],
+  },
+];

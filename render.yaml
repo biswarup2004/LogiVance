@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: shipment-tracker-api
+    env: docker
+    plan: free
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: shipment-tracker-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: shipment-tracker-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: shipment-tracker-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: shipment-tracker-db
+    databaseName: shipment_tracker
+    user: render_admin
+    plan: free
