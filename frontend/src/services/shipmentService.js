@@ -107,3 +107,8 @@ export async function getShipmentById(id) {
     return fallback;
   }
 }
+
+export async function updateShipmentLocation(id, payload) {
+  const response = await httpClient.post(`/shipments/${id}/location`, payload);
+  return response.data;
+}

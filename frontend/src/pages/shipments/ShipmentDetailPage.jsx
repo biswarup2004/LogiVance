@@ -3,9 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { EmptyState } from "../../components/common/EmptyState";
 import { ErrorState } from "../../components/common/ErrorState";
 import { LoadingState } from "../../components/common/LoadingState";
-import { getShipmentById } from "../../services/shipmentService";
+import { getShipmentById, updateShipmentLocation } from "../../services/shipmentService";
 import { createShipmentTrackingSocket } from "../../services/trackingSocketService";
-import { getAuthToken } from "../../utils/authStorage";
+import { getAuthToken, getAuthProfile } from "../../utils/authStorage";
 
 function normalizeLiveLocation(payload, fallbackLocation) {
   if (payload?.lastLocation?.latitude != null && payload?.lastLocation?.longitude != null) {
@@ -50,7 +50,11 @@ export function ShipmentDetailPage() {
   const [liveConnectionState, setLiveConnectionState] = useState("idle");
   const [liveInfoMessage, setLiveInfoMessage] = useState("");
   const [lastLiveEventAt, setLastLiveEventAt] = useState("");
+  const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
+  const [locationError, setLocationError] = useState("");
   const hasShipment = Boolean(shipment);
+  const userProfile = getAuthProfile();
+  const isCarrier = userProfile.role === "ROLE_CARRIER" || userProfile.role === "CARRIER";
 
   const liveBadgeClass = useMemo(() => {
     switch (liveConnectionState) {
@@ -145,6 +149,36 @@ export function ShipmentDetailPage() {
     };
   }, [id, hasShipment]);
 
+  const handleSendLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setIsUpdatingLocation(true);
+    setLocationError("");
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          await updateShipmentLocation(id, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          // Note: The UI will update automatically via WebSockets
+        } catch (err) {
+          setLocationError(err instanceof Error ? err.message : "Failed to update location");
+        } finally {
+          setIsUpdatingLocation(false);
+        }
+      },
+      (error) => {
+        setLocationError("Unable to retrieve your location");
+        setIsUpdatingLocation(false);
+      }
+    );
+  };
+
   if (isLoading) {
     return (
       <section className="panel">
@@ -232,6 +266,18 @@ export function ShipmentDetailPage() {
               <strong>ETA:</strong> {shipment.eta}
             </p>
           </div>
+          {isCarrier && shipment.status !== "DELIVERED" && shipment.status !== "CANCELLED" && (
+            <div style={{ marginTop: "1rem" }}>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleSendLocation} 
+                disabled={isUpdatingLocation}
+              >
+                {isUpdatingLocation ? "Sending..." : "Send My Current Location"}
+              </button>
+              {locationError && <p className="error-text" style={{ marginTop: "0.5rem" }}>{locationError}</p>}
+            </div>
+          )}
         </article>
       </div>
 

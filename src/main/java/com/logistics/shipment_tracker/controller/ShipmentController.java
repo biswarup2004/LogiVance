@@ -1,5 +1,6 @@
 package com.logistics.shipment_tracker.controller;
 
+import com.logistics.shipment_tracker.dto.request.LocationUpdateRequest;
 import com.logistics.shipment_tracker.dto.request.ShipmentRequest;
 import com.logistics.shipment_tracker.dto.response.LocationUpdateResponse;
 import com.logistics.shipment_tracker.dto.response.ShipmentResponse;
@@ -103,6 +104,15 @@ public class ShipmentController {
                                                            @Valid @RequestBody ShipmentRequest request) {
         String username = getCurrentUsername();
         ShipmentResponse response = shipmentService.updateShipment(id, request, username);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/location")
+    @PreAuthorize("hasRole('CARRIER')")
+    public ResponseEntity<LocationUpdateResponse> updateLocation(@PathVariable UUID id,
+                                                                 @Valid @RequestBody LocationUpdateRequest request) {
+        String username = getCurrentUsername();
+        LocationUpdateResponse response = shipmentService.updateShipmentLocation(id, request, username);
         return ResponseEntity.ok(response);
     }
 

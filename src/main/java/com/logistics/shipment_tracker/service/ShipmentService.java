@@ -12,6 +12,7 @@ import com.logistics.shipment_tracker.enums.ShipmentStatus;
 import com.logistics.shipment_tracker.exception.BadRequestException;
 import com.logistics.shipment_tracker.exception.ResourceNotFoundException;
 import com.logistics.shipment_tracker.exception.UnauthorizedException;
+import com.logistics.shipment_tracker.dto.request.LocationUpdateRequest;
 import com.logistics.shipment_tracker.service.AuditLogService;
 import com.logistics.shipment_tracker.repository.LocationUpdateRepository;
 import com.logistics.shipment_tracker.repository.ShipmentRepository;
@@ -154,6 +155,34 @@ public class ShipmentService {
         emitUpdate(updatedShipment, "updated");
         auditLogService.log(username, "UPDATE_SHIPMENT", "Shipment updated: " + updatedShipment.getId());
         return ShipmentResponse.fromEntity(updatedShipment);
+    }
+
+    @Transactional
+    public LocationUpdateResponse updateShipmentLocation(UUID id, LocationUpdateRequest request, String username) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shipment not found"));
+
+        if (shipment.getAwardedBid() != null && !shipment.getAwardedBid().getCarrier().getUsername().equals(username)) {
+            throw new UnauthorizedException("You are not the assigned carrier for this shipment");
+        }
+
+        LocationUpdate locationUpdate = LocationUpdate.builder()
+                .shipment(shipment)
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .build();
+
+        LocationUpdate savedUpdate = locationUpdateRepository.save(locationUpdate);
+        
+        // update shipment status if needed
+        if (shipment.getStatus() == ShipmentStatus.POSTED) {
+             shipment.setStatus(ShipmentStatus.IN_TRANSIT);
+             shipmentRepository.save(shipment);
+        }
+
+        shipment.getLocationUpdates().add(savedUpdate);
+        emitUpdate(shipment, "Location updated");
+        return LocationUpdateResponse.fromEntity(savedUpdate);
     }
 
     @Transactional
