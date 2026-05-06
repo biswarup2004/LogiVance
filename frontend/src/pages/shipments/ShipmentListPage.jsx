@@ -4,6 +4,7 @@ import { EmptyState } from "../../components/common/EmptyState";
 import { ErrorState } from "../../components/common/ErrorState";
 import { LoadingState } from "../../components/common/LoadingState";
 import { getShipments } from "../../services/shipmentService";
+import { getAuthProfile } from "../../utils/authStorage";
 
 const statusOptions = [
   { value: "ALL", label: "All Statuses" },
@@ -21,6 +22,8 @@ export function ShipmentListPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const userProfile = getAuthProfile();
+  const isShipper = userProfile.role === "ROLE_SHIPPER" || userProfile.role === "SHIPPER";
 
   const loadShipments = async () => {
     try {
@@ -60,8 +63,17 @@ export function ShipmentListPage() {
 
   return (
     <section>
-      <p className="eyebrow">Load Board</p>
-      <h2 className="page-title">Shipments</h2>
+      <div className="detail-header" style={{ marginBottom: "1rem" }}>
+        <div>
+          <p className="eyebrow">Load Board</p>
+          <h2 className="page-title">Shipments</h2>
+        </div>
+        {isShipper && (
+          <Link className="btn btn-primary" to="/shipments/new">
+            Create Shipment
+          </Link>
+        )}
+      </div>
 
       <div className="title-row">
         <input

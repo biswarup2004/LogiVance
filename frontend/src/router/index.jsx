@@ -6,6 +6,7 @@ import { RegisterPage } from "../pages/auth/RegisterPage";
 import { DashboardPage } from "../pages/dashboard/DashboardPage";
 import { ShipmentDetailPage } from "../pages/shipments/ShipmentDetailPage";
 import { ShipmentListPage } from "../pages/shipments/ShipmentListPage";
+import { ShipmentCreatePage } from "../pages/shipments/ShipmentCreatePage";
 
 export function AppRouter() {
   return (
@@ -25,6 +26,7 @@ export function AppRouter() {
         >
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="shipments" element={<ShipmentListPage />} />
+          <Route path="shipments/new" element={<ShipmentCreatePage />} />
           <Route path="shipments/:id" element={<ShipmentDetailPage />} />
         </Route>
 

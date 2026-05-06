@@ -112,3 +112,8 @@ export async function updateShipmentLocation(id, payload) {
   const response = await httpClient.post(`/shipments/${id}/location`, payload);
   return response.data;
 }
+
+export async function createShipment(payload) {
+  const response = await httpClient.post("/shipments", payload);
+  return response.data;
+}
