@@ -269,7 +269,7 @@ export function ShipmentDetailPage() {
             </p>
             {shipment.price > 0 && (
                <p>
-                 <strong>Price:</strong> ${shipment.price.toFixed(2)}
+                 <strong>Price:</strong> ₹{shipment.price.toFixed(2)}
                </p>
             )}
             {shipment.carrierName && (

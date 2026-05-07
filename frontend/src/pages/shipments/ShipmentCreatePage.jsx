@@ -54,7 +54,7 @@ export function ShipmentCreatePage() {
     // Dummy realistic distance calculation based on string length (for prototype)
     const mockDistanceKm = (formData.origin.length + formData.destination.length) * 15 + 100;
     
-    // Pricing formula: Base $50 + $1.50 per km + $0.50 per kg
+    // Pricing formula: Base ₹50 + ₹1.50 per km + ₹0.50 per kg
     const calculatedPrice = 50 + (mockDistanceKm * 1.50) + (weight * 0.50);
     
     setQuote({
@@ -207,7 +207,7 @@ export function ShipmentCreatePage() {
                <p><strong>Estimated Distance:</strong> {quote.distanceKm} km</p>
                <p><strong>Total Weight:</strong> {formData.weightKg} kg</p>
                <p style={{ fontSize: "1.2rem", marginTop: "1rem", color: "var(--primary-color)" }}>
-                 <strong>Total Quote: ${quote.price.toFixed(2)}</strong>
+                 <strong>Total Quote: ₹{quote.price.toFixed(2)}</strong>
                </p>
             </div>
 
@@ -227,7 +227,7 @@ export function ShipmentCreatePage() {
           <form onSubmit={handlePaymentSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }} autoComplete="off">
             <h3>Step 3: Payment</h3>
             <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
-              <strong>Amount Due: ${quote.price.toFixed(2)}</strong>
+              <strong>Amount Due: ₹{quote.price.toFixed(2)}</strong>
             </p>
 
             <div>
@@ -290,7 +290,7 @@ export function ShipmentCreatePage() {
                 Back to Quote
               </button>
               <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ flex: 1 }}>
-                {isSubmitting ? "Processing..." : `Pay $${quote.price.toFixed(2)}`}
+                {isSubmitting ? "Processing..." : `Pay ₹${quote.price.toFixed(2)}`}
               </button>
             </div>
           </form>
