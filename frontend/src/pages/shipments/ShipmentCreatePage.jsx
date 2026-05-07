@@ -232,7 +232,7 @@ export function ShipmentCreatePage() {
 
             <div>
               <label htmlFor="cardNumber" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600" }}>
-                Card Number (Dummy)
+                Card Number
               </label>
               <input
                 id="cardNumber"
