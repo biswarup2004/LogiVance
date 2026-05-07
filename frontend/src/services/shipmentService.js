@@ -60,6 +60,9 @@ function normalizeShipment(shipment) {
     weightKg: Number(shipment.weightKg ?? 0),
     status: shipment.status ?? "POSTED",
     eta: shipment.eta ?? "Pending ETA",
+    price: shipment.price ?? 0,
+    carrierId: shipment.carrierId ?? null,
+    carrierName: shipment.carrierName ?? null,
     lastLocation: normalizeLastLocation(shipment),
     statusTimeline: normalizeStatusTimeline(shipment),
   };
@@ -115,5 +118,10 @@ export async function updateShipmentLocation(id, payload) {
 
 export async function createShipment(payload) {
   const response = await httpClient.post("/shipments", payload);
+  return response.data;
+}
+
+export async function acceptShipment(id) {
+  const response = await httpClient.post(`/shipments/${id}/accept`);
   return response.data;
 }

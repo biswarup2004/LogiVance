@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { EmptyState } from "../../components/common/EmptyState";
 import { ErrorState } from "../../components/common/ErrorState";
 import { LoadingState } from "../../components/common/LoadingState";
-import { getShipmentById, updateShipmentLocation } from "../../services/shipmentService";
+import { getShipmentById, updateShipmentLocation, acceptShipment } from "../../services/shipmentService";
 import { createShipmentTrackingSocket } from "../../services/trackingSocketService";
 import { getAuthToken, getAuthProfile } from "../../utils/authStorage";
 
@@ -52,9 +52,12 @@ export function ShipmentDetailPage() {
   const [lastLiveEventAt, setLastLiveEventAt] = useState("");
   const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
   const [locationError, setLocationError] = useState("");
+  const [isAcceptingShipment, setIsAcceptingShipment] = useState(false);
+  const [acceptError, setAcceptError] = useState("");
   const hasShipment = Boolean(shipment);
   const userProfile = getAuthProfile();
   const isCarrier = userProfile.role === "ROLE_CARRIER" || userProfile.role === "CARRIER";
+  const isAssignedCarrier = isCarrier && shipment?.carrierId === userProfile.userId;
 
   const liveBadgeClass = useMemo(() => {
     switch (liveConnectionState) {
@@ -179,6 +182,20 @@ export function ShipmentDetailPage() {
     );
   };
 
+  const handleAcceptShipment = async () => {
+    try {
+      setIsAcceptingShipment(true);
+      setAcceptError("");
+      await acceptShipment(id);
+      // Let WebSocket handle the status update, or manually reload
+      await loadShipment();
+    } catch (err) {
+      setAcceptError(err instanceof Error ? err.message : "Failed to accept shipment");
+    } finally {
+      setIsAcceptingShipment(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <section className="panel">
@@ -250,6 +267,16 @@ export function ShipmentDetailPage() {
                 {shipment.status}
               </span>
             </p>
+            {shipment.price > 0 && (
+               <p>
+                 <strong>Price:</strong> ${shipment.price.toFixed(2)}
+               </p>
+            )}
+            {shipment.carrierName && (
+               <p>
+                 <strong>Assigned Carrier:</strong> {shipment.carrierName}
+               </p>
+            )}
           </div>
         </article>
 
@@ -266,7 +293,21 @@ export function ShipmentDetailPage() {
               <strong>ETA:</strong> {shipment.eta}
             </p>
           </div>
-          {isCarrier && shipment.status !== "DELIVERED" && shipment.status !== "CANCELLED" && (
+          
+          {isCarrier && shipment.status === "POSTED" && (
+            <div style={{ marginTop: "1rem" }}>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleAcceptShipment} 
+                disabled={isAcceptingShipment}
+              >
+                {isAcceptingShipment ? "Accepting..." : "Accept Shipment"}
+              </button>
+              {acceptError && <p className="error-text" style={{ marginTop: "0.5rem" }}>{acceptError}</p>}
+            </div>
+          )}
+
+          {isAssignedCarrier && shipment.status !== "DELIVERED" && shipment.status !== "CANCELLED" && (
             <div style={{ marginTop: "1rem" }}>
               <button 
                 className="btn btn-primary" 

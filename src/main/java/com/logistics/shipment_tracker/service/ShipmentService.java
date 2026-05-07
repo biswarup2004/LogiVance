@@ -66,6 +66,7 @@ public class ShipmentService {
                 .destination(inputSanitizer.sanitize(request.getDestination()))
                 .weightKg(request.getWeightKg())
                 .description(inputSanitizer.sanitize(request.getDescription()))
+                .price(request.getPrice())
                 .status(ShipmentStatus.POSTED)
                 .build();
 
@@ -108,9 +109,10 @@ public class ShipmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Shipment not found"));
 
         boolean isOwner = shipment.getShipper() != null && shipment.getShipper().getUsername().equals(username);
+        boolean isAssignedCarrier = shipment.getCarrier() != null && shipment.getCarrier().getUsername().equals(username);
         boolean carrierCanView = isCarrier && shipment.getStatus() == ShipmentStatus.POSTED;
 
-        if (!isOwner && !isAdmin && !carrierCanView) {
+        if (!isOwner && !isAdmin && !carrierCanView && !isAssignedCarrier) {
             throw new UnauthorizedException("You are not allowed to view this shipment");
         }
 
@@ -162,7 +164,7 @@ public class ShipmentService {
         Shipment shipment = shipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shipment not found"));
 
-        if (shipment.getAwardedBid() != null && !shipment.getAwardedBid().getCarrier().getUsername().equals(username)) {
+        if (shipment.getCarrier() != null && !shipment.getCarrier().getUsername().equals(username)) {
             throw new UnauthorizedException("You are not the assigned carrier for this shipment");
         }
 
@@ -209,11 +211,33 @@ public class ShipmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Shipment not found"));
 
         boolean isOwner = shipment.getShipper() != null && shipment.getShipper().getUsername().equals(username);
+        boolean isAssignedCarrier = shipment.getCarrier() != null && shipment.getCarrier().getUsername().equals(username);
         boolean carrierCanView = isCarrier && shipment.getStatus() == ShipmentStatus.POSTED;
 
-        if (!isOwner && !isAdmin && !carrierCanView) {
+        if (!isOwner && !isAdmin && !carrierCanView && !isAssignedCarrier) {
             throw new UnauthorizedException("You are not allowed to view this shipment");
         }
+    }
+
+    @Transactional
+    public ShipmentResponse acceptShipment(UUID id, String username) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shipment not found"));
+
+        if (shipment.getStatus() != ShipmentStatus.POSTED) {
+            throw new BadRequestException("Shipment is no longer available to be accepted");
+        }
+
+        User carrier = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Carrier not found"));
+
+        shipment.setCarrier(carrier);
+        shipment.setStatus(ShipmentStatus.AWAITING_PICKUP);
+        Shipment updatedShipment = shipmentRepository.save(shipment);
+
+        emitUpdate(updatedShipment, "accepted");
+        auditLogService.log(username, "ACCEPT_SHIPMENT", "Shipment accepted by carrier: " + shipment.getId());
+        return ShipmentResponse.fromEntity(updatedShipment);
     }
 
     private void emitUpdate(Shipment shipment, String message) {

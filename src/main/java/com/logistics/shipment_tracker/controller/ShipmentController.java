@@ -116,6 +116,14 @@ public class ShipmentController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/{id}/accept")
+    @PreAuthorize("hasRole('CARRIER')")
+    public ResponseEntity<ShipmentResponse> acceptShipment(@PathVariable UUID id) {
+        String username = getCurrentUsername();
+        ShipmentResponse response = shipmentService.acceptShipment(id, username);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<Void> cancelShipment(@PathVariable UUID id) {

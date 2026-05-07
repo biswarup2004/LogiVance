@@ -20,14 +20,17 @@ public class ShipmentRequest {
 
     private String description;
 
+    private BigDecimal price;
+
     public ShipmentRequest() {
     }
 
-    public ShipmentRequest(String origin, String destination, BigDecimal weightKg, String description) {
+    public ShipmentRequest(String origin, String destination, BigDecimal weightKg, String description, BigDecimal price) {
         this.origin = origin;
         this.destination = destination;
         this.weightKg = weightKg;
         this.description = description;
+        this.price = price;
     }
 
     public String getOrigin() {
@@ -60,5 +63,13 @@ public class ShipmentRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

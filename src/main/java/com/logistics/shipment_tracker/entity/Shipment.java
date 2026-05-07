@@ -43,6 +43,13 @@ public class Shipment {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "carrier_id")
+    private User carrier;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

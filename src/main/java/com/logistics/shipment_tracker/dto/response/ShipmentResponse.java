@@ -20,8 +20,11 @@ public class ShipmentResponse {
     private String destination;
     private BigDecimal weightKg;
     private String description;
+    private BigDecimal price;
     private ShipmentStatus status;
     private UUID awardedBidId;
+    private UUID carrierId;
+    private String carrierName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<LocationUpdateResponse> locationUpdates;
@@ -36,8 +39,11 @@ public class ShipmentResponse {
                             String destination,
                             BigDecimal weightKg,
                             String description,
+                            BigDecimal price,
                             ShipmentStatus status,
                             UUID awardedBidId,
+                            UUID carrierId,
+                            String carrierName,
                             LocalDateTime createdAt,
                             LocalDateTime updatedAt,
                             List<LocationUpdateResponse> locationUpdates) {
@@ -48,8 +54,11 @@ public class ShipmentResponse {
         this.destination = destination;
         this.weightKg = weightKg;
         this.description = description;
+        this.price = price;
         this.status = status;
         this.awardedBidId = awardedBidId;
+        this.carrierId = carrierId;
+        this.carrierName = carrierName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.locationUpdates = locationUpdates;
@@ -71,8 +80,11 @@ public class ShipmentResponse {
                 shipment.getDestination(),
                 shipment.getWeightKg(),
                 shipment.getDescription(),
+                shipment.getPrice(),
                 shipment.getStatus(),
                 shipment.getAwardedBid() != null ? shipment.getAwardedBid().getId() : null,
+                shipment.getCarrier() != null ? shipment.getCarrier().getId() : null,
+                shipment.getCarrier() != null ? shipment.getCarrier().getUsername() : null,
                 shipment.getCreatedAt(),
                 shipment.getUpdatedAt(),
                 updates
@@ -135,6 +147,14 @@ public class ShipmentResponse {
         this.description = description;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     public ShipmentStatus getStatus() {
         return status;
     }
@@ -149,6 +169,22 @@ public class ShipmentResponse {
 
     public void setAwardedBidId(UUID awardedBidId) {
         this.awardedBidId = awardedBidId;
+    }
+
+    public UUID getCarrierId() {
+        return carrierId;
+    }
+
+    public void setCarrierId(UUID carrierId) {
+        this.carrierId = carrierId;
+    }
+
+    public String getCarrierName() {
+        return carrierName;
+    }
+
+    public void setCarrierName(String carrierName) {
+        this.carrierName = carrierName;
     }
 
     public LocalDateTime getCreatedAt() {
