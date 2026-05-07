@@ -25,22 +25,28 @@ export function ShipmentListPage() {
   const userProfile = getAuthProfile();
   const isShipper = userProfile.role === "ROLE_SHIPPER" || userProfile.role === "SHIPPER";
 
-  const loadShipments = async () => {
+  const loadShipments = async (isBackground = false) => {
     try {
-      setIsLoading(true);
-      setErrorMessage("");
+      if (!isBackground) setIsLoading(true);
+      if (!isBackground) setErrorMessage("");
       const data = await getShipments();
       setShipments(data);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to load shipments.";
-      setErrorMessage(message);
+      if (!isBackground) {
+        const message = error instanceof Error ? error.message : "Unable to load shipments.";
+        setErrorMessage(message);
+      }
     } finally {
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
     }
   };
 
   useEffect(() => {
     loadShipments();
+    const interval = setInterval(() => {
+      loadShipments(true);
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const filteredShipments = useMemo(() => {
@@ -95,7 +101,7 @@ export function ShipmentListPage() {
               </option>
             ))}
           </select>
-          <button className="btn btn-secondary" type="button" onClick={loadShipments}>
+          <button className="btn btn-secondary" type="button" onClick={() => loadShipments(false)}>
             Refresh
           </button>
         </div>

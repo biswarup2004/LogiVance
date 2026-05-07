@@ -60,9 +60,9 @@ export function LoginPage() {
 
   return (
     <div className="auth-page">
-      <form className="auth-card" onSubmit={handleSubmit}>
+      <form className="auth-card" onSubmit={handleSubmit} autoComplete="off">
         <p className="eyebrow">Welcome back</p>
-        <h1>Sign in to TransitHub</h1>
+        <h1>Sign in to LogiVance</h1>
         {serverError ? <p className="alert alert-error">{serverError}</p> : null}
 
         <label className="field-label" htmlFor="username">

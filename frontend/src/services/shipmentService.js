@@ -1,4 +1,4 @@
-import { mockShipments } from "../mocks/shipments";
+
 import { httpClient } from "./httpClient";
 
 function toTimestamp(value) {
@@ -89,26 +89,14 @@ function normalizeShipmentArray(payload) {
 }
 
 export async function getShipments() {
-  try {
-    const response = await httpClient.get("/shipments");
-    const apiShipments = normalizeShipmentArray(response.data).map(normalizeShipment);
-    return apiShipments.length > 0 ? apiShipments : mockShipments;
-  } catch {
-    return mockShipments;
-  }
+  const response = await httpClient.get("/shipments");
+  const apiShipments = normalizeShipmentArray(response.data).map(normalizeShipment);
+  return apiShipments;
 }
 
 export async function getShipmentById(id) {
-  try {
-    const response = await httpClient.get(`/shipments/${id}`);
-    return normalizeShipment(response.data);
-  } catch {
-    const fallback = mockShipments.find((shipment) => shipment.id === id);
-    if (!fallback) {
-      throw new Error("Shipment not found.");
-    }
-    return fallback;
-  }
+  const response = await httpClient.get(`/shipments/${id}`);
+  return normalizeShipment(response.data);
 }
 
 export async function updateShipmentLocation(id, payload) {

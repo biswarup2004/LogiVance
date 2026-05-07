@@ -118,7 +118,7 @@ export function ShipmentCreatePage() {
 
         {/* STEP 1: Details */}
         {step === 1 && (
-          <form onSubmit={handleGetQuote} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <form onSubmit={handleGetQuote} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }} autoComplete="off">
             <h3>Step 1: Shipment Details</h3>
             
             <div>
@@ -224,7 +224,7 @@ export function ShipmentCreatePage() {
 
         {/* STEP 3: Payment */}
         {step === 3 && quote && (
-          <form onSubmit={handlePaymentSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <form onSubmit={handlePaymentSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }} autoComplete="off">
             <h3>Step 3: Payment</h3>
             <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
               <strong>Amount Due: ${quote.price.toFixed(2)}</strong>

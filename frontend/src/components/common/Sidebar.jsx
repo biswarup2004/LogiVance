@@ -11,8 +11,8 @@ export function Sidebar() {
       <div className="brand-block">
         <span className="brand-dot" aria-hidden="true" />
         <div>
-          <p className="brand-name">TransitHub</p>
-          <p className="brand-subtitle">Shipper Portal</p>
+          <p className="brand-name">LogiVance</p>
+          <p className="brand-subtitle">Portal</p>
         </div>
       </div>
       <nav className="nav-list" aria-label="Main navigation">
