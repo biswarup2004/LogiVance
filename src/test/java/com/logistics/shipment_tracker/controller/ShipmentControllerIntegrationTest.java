@@ -75,7 +75,7 @@ class ShipmentControllerIntegrationTest {
 
     @Test
     void shipper_can_create_and_list_their_shipments_paginated() throws Exception {
-        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc");
+        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc", new BigDecimal("100.00"));
 
         mockMvc.perform(post("/api/shipments")
                         .header("Authorization", shipperToken)
@@ -96,7 +96,7 @@ class ShipmentControllerIntegrationTest {
     @Test
     void carrier_sees_posted_shipments_with_pagination() throws Exception {
         // create shipment as shipper
-        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc");
+        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc", new BigDecimal("100.00"));
         mockMvc.perform(post("/api/shipments")
                         .header("Authorization", shipperToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +113,7 @@ class ShipmentControllerIntegrationTest {
 
     @Test
     void owner_can_stream_shipment() throws Exception {
-        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc");
+        ShipmentRequest request = new ShipmentRequest("CityA", "CityB", new BigDecimal("12.5"), "desc", new BigDecimal("100.00"));
         String shipmentId = mockMvc.perform(post("/api/shipments")
                         .header("Authorization", shipperToken)
                         .contentType(MediaType.APPLICATION_JSON)
