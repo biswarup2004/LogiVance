@@ -7,8 +7,8 @@ import { minLength } from "../../utils/validators";
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [username, setUsername] = useState("shipper1");
-  const [password, setPassword] = useState("password123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
